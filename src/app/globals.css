@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 2, 6, 24;
+  --background-end-rgb: 2, 6, 24;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-color: #020618;
+  background-attachment: fixed;
+  font-family: var(--font-outfit), sans-serif;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+
+@layer utilities {
+  .text-gradient {
+    background-image: linear-gradient(to right, #7d87ff 0%, #ffffff 50%, #00d294 100%);
+    @apply bg-clip-text text-transparent;
+  }
+  
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+}
+
+
+@keyframes scan {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.animate-scan {
+  animation: scan 4s ease-in-out infinite;
+}
+
