@@ -30,8 +30,15 @@ export async function POST(req: NextRequest) {
     });
 
     if (!bridgeResponse.ok) {
-        const errorData = await bridgeResponse.json();
-        throw new Error(errorData.detail || 'Python Bridge failed to analyze store');
+        let errorMessage = 'Python Bridge failed to analyze store';
+        try {
+          const errorData = await bridgeResponse.json();
+          errorMessage = errorData.detail || errorMessage;
+        } catch {
+          // If response isn't JSON, use status text
+          errorMessage = `Bridge returned ${bridgeResponse.status}: ${bridgeResponse.statusText}`;
+        }
+        throw new Error(errorMessage);
     }
 
     const { analysis, metadata } = await bridgeResponse.json();
