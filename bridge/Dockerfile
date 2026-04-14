@@ -31,4 +31,5 @@ COPY . .
 # Expose the standard port (7860 is default for Hugging Face)
 EXPOSE 7860
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Use shell form to allow variable expansion for $PORT (required by Render)
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-7860}
