@@ -14,7 +14,11 @@ from io import BytesIO
 from dotenv import load_dotenv
 import traceback
 
-load_dotenv(".env.local")
+# Load local .env if it exists, but HF secrets will already be in environment
+if os.path.exists(".env.local"):
+    load_dotenv(".env.local")
+else:
+    load_dotenv()
 
 app = FastAPI(title="Store Health Bridge")
 
@@ -22,9 +26,9 @@ app = FastAPI(title="Store Health Bridge")
 api_key = os.getenv("GEMINI_API_KEY")
 if api_key:
     genai.configure(api_key=api_key)
-    print(f"[OK] GEMINI_API_KEY Loaded: {api_key[:5]}...{api_key[-5:]}")
+    print(f"[OK] GEMINI_API_KEY Found (Length: {len(api_key)})")
 else:
-    print("[ERR] ERROR: GEMINI_API_KEY not found in .env.local")
+    print("[ERR] ERROR: GEMINI_API_KEY not found in environment")
 
 class AnalyzeRequest(BaseModel):
     url: str
@@ -170,7 +174,13 @@ Return ONLY valid JSON in this EXACT format:
   ]
 }}"""
         
-        models = ['models/gemini-2.5-flash', 'models/gemini-2.0-flash', 'models/gemini-2.0-flash-001']
+        # Prioritize stable and high-performance models
+        models = [
+            'gemini-2.0-flash', 
+            'gemini-1.5-flash', 
+            'gemini-1.5-flash-8b',
+            'gemini-1.5-pro'
+        ]
         analysis = None
         
         for model_name in models:
